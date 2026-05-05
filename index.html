@@ -2,85 +2,314 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Jeu de mémorisation</title>
+  <title>OC Memory Game</title>
   <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      padding: 30px;
-      background: #f5f5f5;
+    @import url('https://fonts.cdnfonts.com/css/mina');
+    @import url('https://fonts.cdnfonts.com/css/bolonewt');
+
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+
+      --pastel-blue: #58b5e0;
+
+      --background: #383838;
+      
+      --primary-dark: #161616;
+      --primary-shadow: #202020;
+      --primary: #2d2d2d;
+      --primary-highlight: #3d3d3d;
+      --primary-bright: #505050;
+      
+      --primary-dark-04: #16161666;
+      --primary-04: #2d2d2d66;
+      --primary-bright-04: #50505066;
+      
+      --secondary-dark: #226731;
+      --secondary-shadow: #2e8533;
+      --secondary: #369c2e;
+      --secondary-highlight: #3caa2d;
+      --secondary-bright: #42b42f;
+
+      --secondary-cold-dark: #236b48;
+      --secondary-cold-shadow: #308d5c;
+      --secondary-cold: #349959;
+
+      --secondary-hot: #3b9027;
+
+      --shaded-glass: #2d2d2d99;
     }
-    textarea {
-      width: 80%;
-      height: 120px;
-      font-size: 16px;
-      padding: 10px;
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      overflow-x: hidden;
     }
+
+    * {
+      font-family: 'Mina', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    /*--Custom elements--*/
+    a {
+        color: var(--pastel-blue);
+        text-decoration: none;
+    }
+
+    /*--Buttons--*/
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 15px;
+      display: block;
+      margin: auto;
+      font-size: 1.5rem;
+      padding: 0.5rem 2rem;
+      background: var(--primary);
+      color: var(--secondary);
+      border: 0.2rem solid var(--secondary);
+      border-radius: 3rem;
+      transition: all 0.1s;
       cursor: pointer;
     }
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
+    button:hover {
+      color: var(--primary);
+      background: var(--secondary-bright);
+      border: 0.2rem solid var(--secondary-bright);
+      box-shadow: 0 0 1rem var(--secondary-hot);
+    }
+
+    /*--Boxes--*/
+    .modernNeonBoxGlass {
+      background: var(--primary-04);
+      border: 0.2rem solid var(--secondary-shadow);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 10px var(--secondary-cold-dark);
+      border-radius: 3rem;
+      font-weight: 1;
+    }
+    .background-blur {
+      z-index: 2;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--primary-bright-04);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 10px var(--secondary-cold-dark);
+      font-weight: 1;
+    }
+
+    /*--Input--*/
+    textarea {
+      font-size: 1.2rem;
+      width: 100%;
+      height: 30vh;
+      color: var(--secondary-highlight);
+      background: var(--primary);
+      border: 0.2rem solid var(--secondary);
+      border-radius: 3rem;
+      caret-color: var(--secondary-bright);
+      outline: none;
+      padding: 1rem;
+    }
+    textarea::placeholder {
+      color: var(--secondary-cold-shadow);
+    }
+
+    body {
+      max-width: 100vw;
+      max-height: 100vh;
+      background: var(--background);
+      color: var(--white);
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      font-weight: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      color: var(--secondary);
+      background: var(--primary);
+      border: 0.2rem solid var(--secondary-shadow);
+      box-shadow: 0 0 10px var(--secondary-cold-dark);
+      border-radius: 15px;
+      width: clamp(15rem, 98vw, 200rem);
+      font-weight: 1;
+      margin: auto;
+      padding: 1rem 0;
+    }
+    header > h1 {
+      font-family: 'Bolonewt', sans-serif;
+      text-transform: uppercase;
+      background: linear-gradient(to bottom, var(--secondary-bright), var(--secondary-cold-dark));
+      background-clip: text;
+      color: transparent;
+      margin: 0;
+      font-weight: 1;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    header > h2 {
+      margin: 0;
+      font-weight: 1;
+      text-align: center;
+    }
+
+    main {
+      width: 100vw;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    section.infos {
+      width: clamp(15rem, 98vw, 200rem);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    section.infos h2 {
+      width: fit-content;
+      font-size: 2rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      background: var(--primary-04);
+      border: 0.2rem solid var(--secondary-shadow);
+      border-radius: 3rem;
+    }
+
+    section.infos article {
+      padding: 0.5rem;
+      font-size: 1.1rem;
+    }
+    section.infos article p {
+      text-align: center;
+      margin-bottom: 0.8rem;
+    }
+    section.infos article strong {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background-color: var(--primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-bright);
+      border: none;
+      border-radius: 15px;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Ouverture Culturelle</h1>
+    <h2>Jeu de mémorisation</h2>
+  </header>
+  <main>
+    <section class="infos">
+      <h2></h2>
+      <article class="modernNeonBoxGlass"></article>
+    </section>
+  </main>
 
-<h1>:brain: Mémorise et écris les mots</h1>
-<p>Écris tous les mots dont tu te souviens :</p>
+  <script>
+    const exercices = {
+      1: ["chat", "chien", "maison", "école", "livre"],
+      2: ["stylo", "table", "chaise", "ordinateur", "fenêtre"],
+      3: ["télévision", "micro-onde", "voiture", "plante", "bibliothèque", "montre", "lampe", "carnet", "guitare", "clavier"]
+    };
 
-<textarea id="input" placeholder="Tape les mots séparés par des espaces ou des virgules..."></textarea>
-<br>
-<button onclick="corriger()">Valider</button>
+    function nettoyer(texte) {
+      return texte
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // enlève accents
+        .replace(/[^a-zA-Z0-9\s,]/g, "")
+        .split(/[\s,]+/)
+        .filter(m => m.length > 0);
+    }
 
-<div class="result" id="resultat"></div>
+    function afficherTest(numeroExo) {
+      const sectionTitle = document.querySelector("section.infos h2");
+      const article = document.querySelector("section.infos article");
 
-<script>
-  // :point_right: MODIFIE ICI TA LISTE DE MOTS
-  const mots = [
-    "chat", "chien", "maison", "école", "livre",
-    "stylo", "table", "chaise", "ordinateur", "fenêtre"
-  ];
+      sectionTitle.textContent = `Exercice ${numeroExo}`;
 
-  function nettoyer(texte) {
-    return texte
-      .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // enlève accents
-      .replace(/[^a-zA-Z0-9\s,]/g, "")
-      .split(/[\s,]+/)
-      .filter(m => m.length > 0);
-  }
+      article.innerHTML = `
+        <p>Écris tous les mots dont tu te souviens :</p>
+        <textarea id="input" placeholder="Tape les mots séparés par des espaces ou des virgules..."></textarea>
+        <br><br>
+        <button onclick="corriger(${numeroExo})">Valider</button>
+        <div class="result" id="resultat"></div>
+        <p><a href="?">⬅ Retour au menu</a></p>
+      `;
+    }
 
-  function corriger() {
-    const input = document.getElementById("input").value;
-    const reponses = nettoyer(input);
+    function corriger(numeroExo) {
+      const motsOriginaux = exercices[numeroExo];
+      
+      // Nettoie la liste de mots à retenir (supprime accents, minuscule)
+      const mots = motsOriginaux.map(m => m.toLowerCase()
+                                          .normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+      
+      const input = document.getElementById("input").value;
+      const reponses = nettoyer(input);
+      const uniques = [...new Set(reponses)];
 
-    const uniques = [...new Set(reponses)];
+      let bons = [];
+      let faux = [];
 
-    let bons = [];
-    let faux = [];
+      uniques.forEach(mot => {
+        if (mots.includes(mot)) {
+          bons.push(mot);
+        } else {
+          faux.push(mot);
+        }
+      });
 
-    uniques.forEach(mot => {
-      if (mots.includes(mot)) {
-        bons.push(mot);
+      // Pour afficher les mots manqués, on prend les mots originaux
+      const manques = motsOriginaux.filter(m => {
+        const motNettoye = m.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return !bons.includes(motNettoye);
+      });
+
+      document.getElementById("resultat").innerHTML = `
+        <p><strong>Ne pas raffraichir la page!</strong></p>
+        <p><strong>Score: ${bons.length} / ${mots.length}</strong></p>
+        <p>Mots trouvés: ${bons.join(", ") || "aucun"}</p>
+        `;
+        //<p>Mots manqués: ${manques.join(", ")}</p>
+    }
+
+    function init() {
+      const sectionTitle = document.querySelector("section.infos h2");
+      const article = document.querySelector("section.infos article");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const exo = urlParams.get('exo');
+
+      if (exo && exercices[exo]) {
+        afficherTest(exo);
       } else {
-        faux.push(mot);
+        sectionTitle.textContent = "Menu";
+
+        article.innerHTML = `
+          <p><strong>Choisis un exercice:</strong></p>
+          <p><a href="?exo=1">Exercice 1</a></p>
+          <p><a href="?exo=2">Exercice 2</a></p>
+          <p><a href="?exo=3">Exercice 3</a></p>
+        `;
       }
-    });
+    }
 
-    const manques = mots.filter(m => !bons.includes(m));
-
-    document.getElementById("resultat").innerHTML = `
-      <p><strong>Score : ${bons.length} / ${mots.length}</strong></p>
-      <p>:white_check_mark: Mots trouvés : ${bons.join(", ") || "aucun"}</p>
-      <p>:x: Mots manqués : ${manques.join(", ")}</p>
-    `;
-  }
-</script>
-
+    init();
+  </script>
 </body>
 </html>
